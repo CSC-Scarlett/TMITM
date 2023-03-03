@@ -10,7 +10,7 @@ INCLUDED IN THIS REPO: TMITM final (Unity, C#)
 Team members:
   - Code: Daniel (LEAD), Nathan, Aiden, Samantha, Paul, Alexander, Oliver, Dorothy, Jennifer, Andy
   
-  - Graphics: Hayley (LEAD), Andy, Mandy, Melissa, Dorothy
+  - Graphics: Haley (LEAD), Andy, Mandy, Melissa, Dorothy
   
   - SFX: Jessica (LEAD), Hilary, William, Aiden
 
