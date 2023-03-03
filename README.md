@@ -1,5 +1,3 @@
-#The Man in the Moon
-
 Welcome to our big project's main repository!
 
 Repo rules:
