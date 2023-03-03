@@ -22,4 +22,4 @@ Notes:
   - There will be no dialogue (may change)
 
 Github: 
-  - Please do not force push the code if your code conflicts with main (the team will go over the code if there are conflicts -- please communicate the conflicts through the discord (invite: ) if you are working remotely)
+  - Please do not force push the code if your code conflicts with main (the team will go over the code if there are conflicts -- please communicate the conflicts through the discord (invite: https://discord.gg/R5aXGBE4dF) if you are working remotely)
