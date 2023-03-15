@@ -16,6 +16,8 @@ public class PlayerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Get our components here
+        anim = GetComponent<Animator>();
 
         anim.SetBool(walking, true); // This is how you set the current animation state
 
