@@ -25,8 +25,6 @@ public class PlayerScript : MonoBehaviour
         anim = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody2D>();
 
-        anim.SetBool(walking, true); // This is how you set the current animation state
-
         // For all coders
         Debug.Log("Use Debug.Log() for debugging (obviously)");
         Debug.LogWarning("Use Debug.LogWarning() when something that isn't supposed to happen happens, but isn't a major issue");
@@ -38,19 +36,39 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame. Use this for animated functions.
     void Update()
     {
-        
+        PlayerAnimation();
     }
 
     // FixedUpdate is called once every tick (or 0.02s). Use this for time-based functions.
     private void FixedUpdate()
     {
         coolnessFactor += 1;
-        moveInput.y = 0f;
-        rigidBody.velocity = moveInput * speed;
+
+        transform.position += new Vector3(moveInput.x, 0f, 0f) * Time.fixedDeltaTime * speed; // position method
+
+        // We can use this method below for force-based movement, but we will also have to add a couple other things (including a "breaking" sprite)
+        //rigidBody.AddForce(3f * speed * Time.fixedDeltaTime * new Vector2(moveInput.x, 0f), ForceMode2D.Impulse);
     }
 
     private void OnMove (InputValue value)
     {
         moveInput = value.Get<Vector2>();
+    }
+
+    ///<summary> This function will control our player's animations </summary>
+    private void PlayerAnimation()
+    {
+        if (moveInput.x == 0)
+        {
+            anim.SetBool(walking, false);
+        } else if (moveInput.x == 1)
+        {
+            anim.SetBool(walking, true);
+            transform.localScale = new Vector3(1, 1, 1);
+        } else if (moveInput.x == -1)
+        {
+            anim.SetBool(walking, true);
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
     }
 }
