@@ -26,9 +26,9 @@ public class PlayerScript : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>();
 
         // For all coders
-        Debug.Log("Use Debug.Log() for debugging (obviously)");
-        Debug.LogWarning("Use Debug.LogWarning() when something that isn't supposed to happen happens, but isn't a major issue");
-        Debug.LogError("Use Debug.LogError() when something goes horribly wrong and needs to be fixed");
+        // Debug.Log("Use Debug.Log() for debugging (obviously)");
+        // Debug.LogWarning("Use Debug.LogWarning() when something that isn't supposed to happen happens, but isn't a major issue");
+        // Debug.LogError("Use Debug.LogError() when something goes horribly wrong and needs to be fixed");
         // This is all pretty obvious but it is also easy to forget to do
         // Also I mainly did this so this document isn't just empty
     }
