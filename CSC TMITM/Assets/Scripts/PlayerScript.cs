@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -12,12 +13,17 @@ public class PlayerScript : MonoBehaviour
     private Animator anim;
     private string walking = "isWalking";
 
+    [SerializeField]
+    private float speed = 5.0f;
+    private Rigidbody2D rigidBody;
+    private Vector2 moveInput;
 
     // Start is called before the first frame update
     void Start()
     {
         // Get our components here
         anim = GetComponent<Animator>();
+        rigidBody = GetComponent<Rigidbody2D>();
 
         anim.SetBool(walking, true); // This is how you set the current animation state
 
@@ -39,5 +45,12 @@ public class PlayerScript : MonoBehaviour
     private void FixedUpdate()
     {
         coolnessFactor += 1;
+        moveInput.y = 0f;
+        rigidBody.velocity = moveInput * speed;
+    }
+
+    private void OnMove (InputValue value)
+    {
+        moveInput = value.Get<Vector2>();
     }
 }
