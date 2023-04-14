@@ -17,6 +17,8 @@ public class PlayerScript : MonoBehaviour
     private float speed = 5.0f;
     private Rigidbody2D rigidBody;
     private Vector2 moveInput;
+    public float jumpForce = 0.0f;
+    private bool isOnGround = true;
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +26,6 @@ public class PlayerScript : MonoBehaviour
         // Get our components here
         anim = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody2D>();
-
         // For all coders
         // Debug.Log("Use Debug.Log() for debugging (obviously)");
         // Debug.LogWarning("Use Debug.LogWarning() when something that isn't supposed to happen happens, but isn't a major issue");
@@ -46,6 +47,7 @@ public class PlayerScript : MonoBehaviour
 
         transform.position += new Vector3(moveInput.x, 0f, 0f) * Time.fixedDeltaTime * speed; // position method
 
+        rigidBody.AddForce(Vector2.up * jumpForce * moveInput.y, ForceMode2D.Impulse);
         // We can use this method below for force-based movement, but we will also have to add a couple other things (including a "breaking" sprite)
         //rigidBody.AddForce(3f * speed * Time.fixedDeltaTime * new Vector2(moveInput.x, 0f), ForceMode2D.Impulse);
     }
