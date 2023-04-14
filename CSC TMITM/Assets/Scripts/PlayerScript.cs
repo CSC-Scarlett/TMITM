@@ -11,7 +11,13 @@ public class PlayerScript : MonoBehaviour
     int coolnessFactor = 10;
 
     private Animator anim;
+    private bool isGrounded;
+    private bool isJumping;
+    private bool isPunching;
+    private bool punchCooldown = false;
     private string walking = "isWalking";
+    private string jumping = "isJumping";
+    private string punching = "isPunching";
 
     [SerializeField]
     private float speed = 5.0f;
@@ -46,6 +52,10 @@ public class PlayerScript : MonoBehaviour
 
         transform.position += new Vector3(moveInput.x, 0f, 0f) * Time.fixedDeltaTime * speed; // position method
 
+        if (isGrounded && (moveInput.y > 0 || isJumping)) PlayerJump();
+
+        if (isPunching && !punchCooldown && isGrounded) PlayerPunch();
+
         // We can use this method below for force-based movement, but we will also have to add a couple other things (including a "breaking" sprite)
         //rigidBody.AddForce(3f * speed * Time.fixedDeltaTime * new Vector2(moveInput.x, 0f), ForceMode2D.Impulse);
     }
@@ -53,7 +63,17 @@ public class PlayerScript : MonoBehaviour
     private void OnMove (InputValue value)
     {
         moveInput = value.Get<Vector2>();
-    }
+    } // end OnMove()
+
+    private void OnJump(InputValue value)
+    {
+        isJumping = value.isPressed;
+    } // end OnJump()
+
+    private void OnPunch(InputValue value)
+    {
+        isPunching = value.isPressed;
+    } // end OnPunch()
 
     ///<summary> This function will control our player's animations </summary>
     private void PlayerAnimation()
@@ -61,14 +81,69 @@ public class PlayerScript : MonoBehaviour
         if (moveInput.x == 0)
         {
             anim.SetBool(walking, false);
-        } else if (moveInput.x == 1)
+        } else if (moveInput.x >= 0.5)
         {
             anim.SetBool(walking, true);
             transform.localScale = new Vector3(1, 1, 1);
-        } else if (moveInput.x == -1)
+        } else if (moveInput.x <= -0.5)
         {
             anim.SetBool(walking, true);
             transform.localScale = new Vector3(-1, 1, 1);
         }
+    } // end PlayerAnimation()
+
+    private void PlayerJump()
+    {
+        rigidBody.AddForce(new Vector2(0f, 9f), ForceMode2D.Impulse);
+        anim.SetBool(jumping, true);
+        isGrounded = false;
+        StartCoroutine(PlayerJumpHold(5));
     }
-}
+    private void PlayerPunch()
+    {
+        rigidBody.AddForce(new Vector2(4f*moveInput.x, 0f), ForceMode2D.Impulse);
+        anim.SetBool(punching, true);
+        punchCooldown = true;
+
+        StartCoroutine(PlayerPunchHold());
+    }
+
+    IEnumerator PlayerPunchHold()
+    {
+        yield return new WaitForSeconds(0.5f);
+        anim.SetBool(punching, false);
+
+        StartCoroutine(PlayerPunchCooldown());
+    }
+    IEnumerator PlayerPunchCooldown()
+    {
+        yield return new WaitForSeconds(0.3f);
+        punchCooldown = false;
+    }
+    IEnumerator PlayerJumpHold(int s)
+    {
+        yield return new WaitForSeconds(0.1f); // Waits until after 0.1s to check for jumping
+        // If player is still jumping, increase upward velocity and make another check
+        if (isJumping || moveInput.y > 0)
+        {
+            rigidBody.AddForce(new Vector2(0f, 4f), ForceMode2D.Impulse);
+            PlayerJumpHold(s - 1);
+        }
+    }
+
+    /// <summary>Controls what happens when the player collides with another hitbox</summary>
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground")) {
+            anim.SetBool(jumping, false);
+            isGrounded = true;
+        }
+    }
+
+    /// <summary>Controls what happens when the player stops colliding with a hitbox</summary>
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+         anim.SetBool(jumping, true);
+         isGrounded = false;
+    }
+} // end class
