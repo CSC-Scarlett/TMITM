@@ -13,8 +13,11 @@ public class PlayerScript : MonoBehaviour
     private Animator anim;
     private bool isGrounded;
     private bool isJumping;
+    private bool isPunching;
+    private bool punchCooldown = false;
     private string walking = "isWalking";
     private string jumping = "isJumping";
+    private string punching = "isPunching";
 
     [SerializeField]
     private float speed = 5.0f;
@@ -51,6 +54,8 @@ public class PlayerScript : MonoBehaviour
 
         if (isGrounded && (moveInput.y > 0 || isJumping)) PlayerJump();
 
+        if (isPunching && !punchCooldown && isGrounded) PlayerPunch();
+
         // We can use this method below for force-based movement, but we will also have to add a couple other things (including a "breaking" sprite)
         //rigidBody.AddForce(3f * speed * Time.fixedDeltaTime * new Vector2(moveInput.x, 0f), ForceMode2D.Impulse);
     }
@@ -63,7 +68,12 @@ public class PlayerScript : MonoBehaviour
     private void OnJump(InputValue value)
     {
         isJumping = value.isPressed;
-    } // end OnMove()
+    } // end OnJump()
+
+    private void OnPunch(InputValue value)
+    {
+        isPunching = value.isPressed;
+    } // end OnPunch()
 
     ///<summary> This function will control our player's animations </summary>
     private void PlayerAnimation()
@@ -89,7 +99,27 @@ public class PlayerScript : MonoBehaviour
         isGrounded = false;
         StartCoroutine(PlayerJumpHold(5));
     }
+    private void PlayerPunch()
+    {
+        rigidBody.AddForce(new Vector2(4f*moveInput.x, 0f), ForceMode2D.Impulse);
+        anim.SetBool(punching, true);
+        punchCooldown = true;
 
+        StartCoroutine(PlayerPunchHold());
+    }
+
+    IEnumerator PlayerPunchHold()
+    {
+        yield return new WaitForSeconds(0.5f);
+        anim.SetBool(punching, false);
+
+        StartCoroutine(PlayerPunchCooldown());
+    }
+    IEnumerator PlayerPunchCooldown()
+    {
+        yield return new WaitForSeconds(0.3f);
+        punchCooldown = false;
+    }
     IEnumerator PlayerJumpHold(int s)
     {
         yield return new WaitForSeconds(0.1f); // Waits until after 0.1s to check for jumping

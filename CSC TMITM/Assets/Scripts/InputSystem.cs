@@ -49,6 +49,14 @@ public class @InputSystem : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Punch"",
+                    ""type"": ""Value"",
+                    ""id"": ""d614b8b2-ec01-4a98-a671-eea877cc67cc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -258,6 +266,17 @@ public class @InputSystem : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e2ec5024-3543-485f-9cd6-90305956917f"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Punch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -839,6 +858,7 @@ public class @InputSystem : IInputActionCollection, IDisposable
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_Punch = m_Player.FindAction("Punch", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -904,6 +924,7 @@ public class @InputSystem : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_Punch;
     public struct PlayerActions
     {
         private @InputSystem m_Wrapper;
@@ -912,6 +933,7 @@ public class @InputSystem : IInputActionCollection, IDisposable
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        public InputAction @Punch => m_Wrapper.m_Player_Punch;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -933,6 +955,9 @@ public class @InputSystem : IInputActionCollection, IDisposable
                 @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Punch.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPunch;
+                @Punch.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPunch;
+                @Punch.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPunch;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -949,6 +974,9 @@ public class @InputSystem : IInputActionCollection, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @Punch.started += instance.OnPunch;
+                @Punch.performed += instance.OnPunch;
+                @Punch.canceled += instance.OnPunch;
             }
         }
     }
@@ -1109,6 +1137,7 @@ public class @InputSystem : IInputActionCollection, IDisposable
         void OnLook(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnPunch(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
